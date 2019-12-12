@@ -13,9 +13,9 @@ class BlockAgent:
 		self.position = coordinate
 		self.direction = direction
 		self.mc = mc
-		self.inject_agent()
+		self.render_agent()
 		
-	def inject_agent(self):
+	def render_agent(self):
 		self.add_block(self.position)
 		
 	def print_direction(self):
@@ -45,13 +45,15 @@ class BlockAgent:
 		'''
 		if self.direction == 'n':
 			return self.mc.getBlock(x, y, z - 1)
-		if self.direction == 's':
+		elif self.direction == 's':
 			return self.mc.getBlock(x, y, z + 1)
-		if self.direction == 'e':
+		elif self.direction == 'e':
 			return self.mc.getBlock(x + 1, y, z) 
-		if self.direction == 'w':
+		elif self.direction == 'w':
 			return self.mc.getBlock(x - 1, y, z)
-		
+		else:
+			print("error: can't get_next_block_type")
+			
 	def get_next_block_coordinate(self):
 		'''
 		reads direction from the agent state to return a coordinate for the next step
@@ -71,14 +73,16 @@ class BlockAgent:
 		direction and current position
 		'''
 		#if path is clear
+		print('---------------------------------')
+		print("BEGIN MOVE")
 		print("direction: {}".format(self.direction))
 		print("next block type: {}".format(self.get_next_block_type()))
 		# get new block coordinate
 		new_block = self.get_next_block_coordinate()
 		print("current coordinate: ({}, {}, {})".format(self.position.get_x(),self.position.get_y(),self.position.get_z()))
 		print("next coordinate: ({}, {}, {})".format(new_block.get_x(),new_block.get_y(),new_block.get_z()))
+		print("next block type: {}".format(self.get_next_block_type()))
 		if self.get_next_block_type() == 0: # if path is clear
-			print('---------------------------------')
 			# remove old block
 			print("removing old block: ({}, {}, {})".format(self.position.get_x(),self.position.get_y(),self.position.get_z()))
 			self.remove_block(self.position)
@@ -115,12 +119,12 @@ class BlockAgent:
 		a-star algorithm for finding shortest path
 		'''
 		
-	def hill-climb():
+	def hillclimb():
 		'''
 		a literal hill-climbing algorithm for our agent
 		'''
 		
-	def reactive agent():
+	def reactive_agent():
 		'''
 		agent percepts and reacts to objects according to their
 		block-type
@@ -133,7 +137,7 @@ ax,ay,az = int(x), int(y), int(z) # get coordinate for agent
 mc.player.setPos(int(x), int(y), int(z+4)) # modify position to make way for the snake
 print("agent start pos:\ne/w: {}\nn/s: {}\nalt: {}".format(x, z, y))
 agent_smith = BlockAgent(Coordinate(ax,ay,az), 'n', mc) # instantiate agent
-agent_smith.inject_agent()
+agent_smith.render_agent()
 
 # demonstrate crawl
 time.sleep(1)
