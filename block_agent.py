@@ -65,17 +65,6 @@ class BlockAgent:
 		if self.direction == 'w':
 			return Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
 	
-	def get_distance(coordinate):
-		'''
-		returns agent's distance from the given coordinate
-		'''
-	
-	def expand():
-		'''
-		uses agent position to expand the (forward, left, right) nodes
-		and returns the associated coordinate objects
-		'''
-
 	def move_forward(self):
 		'''
 		moves the block agent forward by one space according to its 
@@ -100,16 +89,42 @@ class BlockAgent:
 			self.update_pos(new_block)
 			print('---------------------------------')
 		
+ 	def get_distance(coordinate):
+		'''
+		returns agent's distance from the given coordinate
+		'''
+	
+	def expand():
+		'''
+		uses agent position to expand the (forward, left, right) nodes
+		and returns the associated coordinate objects
+		'''
+
 	def dfs():
+		'''
+		depth-first traversal
+		'''
 		
 	def bfs():
+		'''
+		breadth-first traversal
+		'''
 		
 	def a_star():
-	
+		'''
+		a-star algorithm for finding shortest path
+		'''
+		
 	def hill-climb():
-	
+		'''
+		a literal hill-climbing algorithm for our agent
+		'''
+		
 	def reactive agent():
-				
+		'''
+		agent percepts and reacts to objects according to their
+		block-type
+		'''		
 		
 # setup driver for this class test
 mc = Minecraft.create() # instantiate api
