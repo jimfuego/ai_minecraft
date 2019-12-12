@@ -111,7 +111,7 @@ class BlockAgent:
 	def reactive agent():
 				
 		
-		
+# setup driver for this class test
 mc = Minecraft.create() # instantiate api
 x, y, z = mc.player.getPos() # get initial position
 ax,ay,az = int(x), int(y), int(z) # get coordinate for agent
@@ -120,6 +120,7 @@ print("agent start pos:\ne/w: {}\nn/s: {}\nalt: {}".format(x, z, y))
 agent_smith = BlockAgent(Coordinate(ax,ay,az), 'n', mc) # instantiate agent
 agent_smith.inject_agent()
 
+# demonstrate crawl
 time.sleep(1)
 print("begin crawl")
 for i in range(10):
