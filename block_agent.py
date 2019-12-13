@@ -16,6 +16,7 @@ class BlockAgent:
 		self.mc = mc
 
 	def render_agent(self):
+		"""renders agent at it's specified location"""
 		self.add_block(self.position)
 
 	def print_direction(self):
@@ -23,6 +24,10 @@ class BlockAgent:
 		prints the current facing direction of the agent
 		"""
 		print(self.direction)
+	
+	def get_pos(self):
+		"""returns a coordinate object of agent's position"""
+		return self.position
 
 	def update_pos(self, coordinate):
 		"""
@@ -41,7 +46,16 @@ class BlockAgent:
 		wrapper takes a coordinate and clears that place
 		"""
 		self.mc.setBlock(coordinate.get_x(), coordinate.get_y(), coordinate.get_z(), 1)
-
+		
+	def move_agent(self, coordinate):
+		"""
+		removes block from current location to parameterized location, 
+		and updates agent state
+		"""
+		self.remove_block(self.position)
+		self.update_pos(coordinate)
+		self.add_block(coordinate)
+		
 	def get_block_type(self, c):
 		"""
 		gets the block type given a coordinate
@@ -91,78 +105,104 @@ class BlockAgent:
 			print('---------------------------------')
 		else:
 			print("***COLLISION DETECTED***")
+			
 
 	def get_distance(self, coordinate):
 		"""
 		returns agent's distance from the given coordinate
 		"""
-
+		
+	def compare_co(c1, c2):
+		"""
+		returns true if both coordinates are the same
+		"""
+		if c1.get_x() == c2.get_x() and c1.get_y() == c2.get_y() and c1.get_z() == c2.get_z():
+		
 	def expand(self):
 		"""
-		uses agent position to expand the (forward, left, right) nodes
-		and returns the associated coordinate objects
-		return:: 3 Coordinates corresponding to front.left,right nodes
+		uses agent position to expand the (n, s, e, w) nodes and returns
+		the associated coordinate objects if the space is empty
+		return:: the surrounding, traversible coordinates/nodes []
 		"""
-		if self.direction == 'n':  # return e,n,w
-			return \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1), \
-				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
-		elif self.direction == 's':  # return w,s,e
-			return \
-				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()), \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
-				Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
-		elif self.direction == 'e':  # return n,e,s
-			return \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1), \
-				Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z()), \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)
-		elif self.direction == 'w':  # return s,w,n
-			return \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
-				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()), \
-				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)
+		n = Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)
+		s = Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)
+		e = Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
+		w = Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
+		empty_neighbors = []
+		if self.get_block_type(n) == 0:
+			empty_neighbors.add(n)
+		if self.get_block_type(s) == 0:
+			empty_neighbors.add(s)
+		if self.get_block_type(e) == 0:
+			empty_neighbors.add(e)
+		if self.get_block_type(w) == 0:
+			empty_neighbors.add(w)
+		return empty_neighbors
 
-	def dfs(self, goal):
-		"""
-		depth-first traversal
-		"""
+def dfs(agent, goal):
+	"""
+	depth-first traversal
+	"""
+	visited, stack = set(), [agent.get_pos()]
+	while stack:  # while there are nodes to visit
+		vertex = stack.pop()  # get vertex (Coordinate)
+		agent.move_agent(vertex)
+		print("agent arrived at {}".format(vertex))
+		if agent.get_pos() == goal:  # check for goal state
+			print("GOAL REACHED")
+			return true
+		if vertex not in visited:  # if we have not visted this node yet
+			visited.add(vertex)  # add this node to visited set
+			stack.extend(agent.expand() - visited) # add unvisited nodes stack
+	
+		
+def bfs(agent, goal):
+	"""
+	breadth-first traversal
+	"""
+	
 
-	def bfs(self, goal):
-		"""
-		breadth-first traversal
-		"""
+def a_star(agent, goal):
+	"""
+	a-star algorithm for finding shortest path
+	"""
+	start_point = Coordinate(12,9,56)  # starting point of our maze
+	end_point = Coordinate(7,9,43)
 
-	def a_star(self, goal):
-		"""
-		a-star algorithm for finding shortest path
-		"""
+def hillclimb(agent):
+	"""
+	a literal hill-climbing algorithm for our agent
+	"""
+	max_north = 34
+	min_south = 61
+	min_height = 10
+	x = 8
+		
+def reactive_agent():
+	"""
+	agent percepts and reacts to objects according to their
+	block-type
+	"""
+	start_point = Coordinate(7,9,28)  # starting point inside reaction zone!
 
-	def hillclimb(self):
-		"""
-		a literal hill-climbing algorithm for our agent
-		"""
-
-	def reactive_agent(self):
-		"""
-		agent percepts and reacts to objects according to their
-		block-type
-		"""
-
+def run_dfs():
+	# DFS
+	start = Coordinate(12,9,56)  # starting point of our maze
+	goal = Coordinate(7,9,43)  # Goal point of our maze
+	mc = Minecraft.create() 
+	agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
+	agent_smith.render_agent()
+	print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start_point.get_x(), start_point.get_z(), start_point.get_y()))
+	dfs(agent, goal)
+	
+def run_bfs():
+	# BFS
+	start = Coordinate(12,9,56)  # starting point of our maze
+	goal = Coordinate(7,9,43)  # Goal point of our maze
+	agent_smith = BlockAgent(Coordinate(ax, ay, az), 'n', mc)  # instantiate agent
+	agent_smith.render_agent()
+	print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start_point.get_x(), start_point.get_z(), start_point.get_y()))
 
 # setup driver for this class test
-mc = Minecraft.create()  # instantiate api
-x, y, z = mc.player.getPos()  # get initial position
-ax, ay, az = int(x), int(y), int(z)  # get coordinate for agent
-mc.player.setPos(int(x), int(y), int(z + 4))  # modify position to make way for the snake
-print("agent start pos:\ne/w: {}\nn/s: {}\nalt: {}".format(x, z, y))
-agent_smith = BlockAgent(Coordinate(ax, ay, az), 'n', mc)  # instantiate agent
-agent_smith.render_agent()
 
-# demonstrate crawl
-time.sleep(1)
-print("begin crawl")
-for i in range(10):
-	agent_smith.move_forward()
-	time.sleep(.3)
+run_dfs()
