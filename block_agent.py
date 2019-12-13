@@ -42,28 +42,11 @@ class BlockAgent:
 		"""
 		self.mc.setBlock(coordinate.get_x(), coordinate.get_y(), coordinate.get_z(), 1)
 
-	def get_next_block_type(self):
-		"""
-		reads direction from the agent state to return next
-		block-type in path
-		"""
-		if self.direction == 'n':
-			return self.mc.getBlock(x, y, z - 1)
-		elif self.direction == 's':
-			return self.mc.getBlock(x, y, z + 1)
-		elif self.direction == 'e':
-			return self.mc.getBlock(x + 1, y, z)
-		elif self.direction == 'w':
-			return self.mc.getBlock(x - 1, y, z)
-		else:
-			print("error: can't get_next_block_type")
-			
 	def get_block_type(self, c):
 		"""
 		gets the block type given a coordinate
 		"""
 		return self.mc.getBlock(int(c.get_x()), int(c.get_y()), int(c.get_z()))
-		
 
 	def get_next_block_coordinate(self):
 		"""
@@ -90,20 +73,20 @@ class BlockAgent:
 		print("BEGIN MOVE")
 		print("direction: {}".format(self.direction))
 		print("next block type: {}".format(new_block_type))
-		print("current coordinate: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(), self.position.get_z()))
+		print("current coordinate: ({}, {}, {})".format(self.position.get_x(),
+														self.position.get_y(),
+														self.position.get_z()))
 		print("next coordinate: ({}, {}, {})".format(new_block.get_x(), new_block.get_y(), new_block.get_z()))
-		
+
 		# render one step
 		if new_block_type == 0:  # if path is clear
 			# remove old block
-			print("removing old block: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(),
-															self.position.get_z()))
+			print("removing old block: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(), self.position.get_z()))
 			self.remove_block(self.position)
 			# set new block
 			print("setting new block: ({}, {}, {})".format(new_block.get_x(), new_block.get_y(), new_block.get_z()))
 			self.add_block(new_block)
-			print('updating agent position to: ({}, {}, {})'.format(new_block.get_x(), new_block.get_y(),
-																	new_block.get_z()))
+			print('updating agent position to: ({}, {}, {})'.format(new_block.get_x(), new_block.get_y(), new_block.get_z()))
 			self.update_pos(new_block)
 			print('---------------------------------')
 		else:
@@ -120,32 +103,31 @@ class BlockAgent:
 		and returns the associated coordinate objects
 		return:: 3 Coordinates corresponding to front.left,right nodes
 		"""
-		if self.direction == 'n': # return e,n,w
-			return 
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)),
-			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
-		if self.direction == 's':# return w,s,e
-			return
-			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()),
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
-			Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
-		if self.direction == 'e':# return n,e,s
-			return
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)),
-			Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z()),
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1))
-		if self.direction == 'w':# return s,w,n
-			return
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
-			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()),
-			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1))
+		if self.direction == 'n':  # return e,n,w
+			return \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1), \
+				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
+		elif self.direction == 's':  # return w,s,e
+			return \
+				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()), \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
+				Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
+		elif self.direction == 'e':  # return n,e,s
+			return \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1), \
+				Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z()), \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)
+		elif self.direction == 'w':  # return s,w,n
+			return \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1), \
+				Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()), \
+				Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)
 
 	def dfs(self, goal):
 		"""
 		depth-first traversal
 		"""
-		
 
 	def bfs(self, goal):
 		"""
