@@ -1,5 +1,5 @@
 from coordinate import Coordinate
-# from mcpi.minecraft import Minecraft
+from mcpi.minecraft import Minecraft
 import time
 
 
@@ -14,7 +14,6 @@ class BlockAgent:
 		self.position = coordinate
 		self.direction = direction
 		self.mc = mc
-		# self.render_agent()
 
 	def render_agent(self):
 		self.add_block(self.position)
@@ -58,6 +57,13 @@ class BlockAgent:
 			return self.mc.getBlock(x - 1, y, z)
 		else:
 			print("error: can't get_next_block_type")
+			
+	def get_block_type(self, c):
+		"""
+		gets the block type given a coordinate
+		"""
+		return self.mc.getBlock(int(c.get_x()), int(c.get_y()), int(c.get_z()))
+		
 
 	def get_next_block_coordinate(self):
 		"""
@@ -75,20 +81,20 @@ class BlockAgent:
 	def move_forward(self):
 		"""
 		moves the block agent forward by one space according to its
-		direction and current position
+		direction and current positio
 		"""
-		# if path is clear
+		# get new block coordinate
+		new_block = self.get_next_block_coordinate()
+		new_block_type = self.get_block_type(new_block)
 		print('---------------------------------')
 		print("BEGIN MOVE")
 		print("direction: {}".format(self.direction))
-		print("next block type: {}".format(self.get_next_block_type()))
-		# get new block coordinate
-		new_block = self.get_next_block_coordinate()
-		print("current coordinate: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(),
-														self.position.get_z()))
+		print("next block type: {}".format(new_block_type))
+		print("current coordinate: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(), self.position.get_z()))
 		print("next coordinate: ({}, {}, {})".format(new_block.get_x(), new_block.get_y(), new_block.get_z()))
-		print("next block type: {}".format(self.get_next_block_type()))
-		if self.get_next_block_type() == 0:  # if path is clear
+		
+		# render one step
+		if new_block_type == 0:  # if path is clear
 			# remove old block
 			print("removing old block: ({}, {}, {})".format(self.position.get_x(), self.position.get_y(),
 															self.position.get_z()))
@@ -100,6 +106,8 @@ class BlockAgent:
 																	new_block.get_z()))
 			self.update_pos(new_block)
 			print('---------------------------------')
+		else:
+			print("***COLLISION DETECTED***")
 
 	def get_distance(self, coordinate):
 		"""
