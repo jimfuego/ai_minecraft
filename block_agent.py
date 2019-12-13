@@ -118,19 +118,41 @@ class BlockAgent:
 		"""
 		uses agent position to expand the (forward, left, right) nodes
 		and returns the associated coordinate objects
+		return:: 3 Coordinates corresponding to front.left,right nodes
 		"""
+		if self.direction == 'n': # return e,n,w
+			return 
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)),
+			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
+		if self.direction == 's':# return w,s,e
+			return
+			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()),
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
+			Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
+		if self.direction == 'e':# return n,e,s
+			return
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)),
+			Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z()),
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1))
+		if self.direction == 'w':# return s,w,n
+			return
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)),
+			Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z()),
+			Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1))
 
-	def dfs(self):
+	def dfs(self, goal):
 		"""
 		depth-first traversal
 		"""
+		
 
-	def bfs(self):
+	def bfs(self, goal):
 		"""
 		breadth-first traversal
 		"""
 
-	def a_star(self):
+	def a_star(self, goal):
 		"""
 		a-star algorithm for finding shortest path
 		"""
