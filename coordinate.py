@@ -3,7 +3,19 @@ class Coordinate:
 		self.x = x
 		self.y = y
 		self.z = z
-        
+	
+	def __repr__(self):
+		return "{} {} {}".format(self.get_x(), self.get_y(), self.get_z()
+
+	def __eq__(self, other):
+		if isinstance(self,other):
+			return (self.get_x() == other.get_x()) and (self.get_y() == other.get_y()) and (self.get_z() == other.get_z())
+        else:
+			return false
+			
+	def __hash__(self):
+		return hash(self.__repr__())
+		
 	def get_coordinate(self):
 		return self.x, self.y, self.z
         
@@ -24,3 +36,9 @@ class Coordinate:
 
 	def set_z(self, z):
 		self.z = z
+		
+coset = set()
+coset.add(Coordinate(10,5,5))
+print(len(coset)
+coset.add(Coordinate(10,5,5))
+print(len(coset)
