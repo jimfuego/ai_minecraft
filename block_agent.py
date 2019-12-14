@@ -85,7 +85,7 @@ class BlockAgent:
         if self.direction == 'w':
             return Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
         return None
-    
+
     def move_forward(self):
         """
         moves the block agent forward by one space according to its
@@ -182,40 +182,40 @@ def bfs(agent, goal):
             q.extend(neighbors - visited)  # add unvisited nodes stack
         time.sleep(.2)
 
+
 def a_star(agent, start, goal):
     """
     a-star algorithm for finding shortest path
     """
+
     def a_star_heuristic(current, start, goal):
         """calculates the distance (hypotenuse) between two 2D points"""
-        if current == None or start == None or goal == None:
+        if current is None or start is None or goal is None:
             return 0
         return \
             math.hypot(start.get_x() - current.get_x(), start.get_y() - current.get_y()) + \
             math.hypot(goal.get_x() - current.get_x(), goal.get_y() - current.get_y())
-    
-    def reconstruct_path(came_from, current):
+
+    def reconstruct_path(came_from, cur):
         """reconstructs the path found by a_star"""
-        path = []
-        path.append(current)
-        while current in came_from:
-            current = came_from[current]
-            path.insert(0, current)
+        path = [cur]
+        while cur in came_from:
+            cur = came_from[cur]
+            path.insert(0, cur)
         return path
-        
+
     # init some guys
     frontier = set()
     frontier.add(start)
     came_from = {}
-    g_scores = {}
-    g_scores[start.__repr__()] = 0
-    f_scores = {}
-    f_scores[start.__repr__()] = 0
+    g_scores = {start.__repr__(): 0}
+    f_scores = {start.__repr__(): 0}
     current = None
     print(len(frontier))
     while frontier:
         for node in frontier:  # get the node with the lowest f score
-            current = node if len(frontier) == 1 or a_star_heuristic(node, start, goal) < a_star_heuristic(current, start, goal) else node
+            current = node if len(frontier) == 1 or \
+                              a_star_heuristic(node, start, goal) < a_star_heuristic(current, start, goal) else node
         agent.move_agent(current)  # position agent
         if current == goal:
             return reconstruct_path()
@@ -224,13 +224,14 @@ def a_star(agent, start, goal):
             temp_g = 1 + g_scores[current.__repr__()]  # 1 is a stand-in due to equal weights to neighbors
             if temp_g < g_scores[neighbor.__repr__()]:
                 came_from[neighbor.__repr__()] = current
-                g_score[neighbor.__repr__()] = temp_g
+                g_scores[neighbor.__repr__()] = temp_g
                 f_scores[neighbor.__repr__()] = g_scores[neighbor.__repr__()] + 1
                 if neighbor not in frontier:
                     frontier.add(neighbor)
     print("Could not find shortest path!")
     return False  # failed to find shortest path
-        
+
+
 def hillclimb(agent):
     """
     a literal hill-climbing algorithm for our agent
@@ -249,10 +250,8 @@ def reactive_agent():
     start_point = Coordinate(7, 9, 28)  # starting point inside reaction zone!
 
 
-def run_dfs():
+def run_dfs(start, goal):
     # DFS
-    start = Coordinate(-13, 9, 56)  # starting point of our maze
-    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
     start_block = agent_smith.get_block_type(start)
@@ -265,10 +264,8 @@ def run_dfs():
     return True
 
 
-def run_bfs():
+def run_bfs(start, goal):
     # BFS
-    start = Coordinate(-13, 9, 56)  # starting point of our maze
-    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
     start_block = agent_smith.get_block_type(start)
@@ -279,10 +276,9 @@ def run_bfs():
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
     bfs(agent_smith, goal)
     return True
-    
-def run_a_star():
-    start = Coordinate(-13, 9, 56)  # starting point of our maze
-    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
+
+
+def run_a_star(start, goal):
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
     start_block = agent_smith.get_block_type(start)
@@ -292,21 +288,24 @@ def run_a_star():
     agent_smith.render_agent()
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
     a_star(agent_smith, start, goal)
-    
-    
+
+
+start = Coordinate(-13, 9, 56)  # starting point of our maze
+goal = Coordinate(-8, 9, 43)  # Goal point of our maze
 # setup driver for this class test
-#run_dfs()
-run_a_star()
-#start = Coordinate(-13, 9, 56)
-#n = Coordinate(-11, 9, 56)
-#s = Coordinate(-13, 9, 56)
-#w = Coordinate(-12, 9, 55)
-#e = Coordinate(-12, 9, 57)
-#mc = Minecraft.create()
-#agent_smith = BlockAgent(start, 'n', mc)
-#print("block @ start: {}".format(agent_smith.get_block_type(start)))
-#print("block @ n: {}".format(agent_smith.get_block_type(n)))
-#print("block @ s: {}".format(agent_smith.get_block_type(s)))
-#print("block @ w: {}".format(agent_smith.get_block_type(w)))
-#print("block @ e: {}".format(agent_smith.get_block_type(e)))
-#agent_smith.add_block(start)
+# run_dfs(start, goal)
+# run_bfs(start, goal)
+run_a_star(start, goal)
+# start = Coordinate(-13, 9, 56)
+# n = Coordinate(-11, 9, 56)
+# s = Coordinate(-13, 9, 56)
+# w = Coordinate(-12, 9, 55)
+# e = Coordinate(-12, 9, 57)
+# mc = Minecraft.create()
+# agent_smith = BlockAgent(start, 'n', mc)
+# print("block @ start: {}".format(agent_smith.get_block_type(start)))
+# print("block @ n: {}".format(agent_smith.get_block_type(n)))
+# print("block @ s: {}".format(agent_smith.get_block_type(s)))
+# print("block @ w: {}".format(agent_smith.get_block_type(w)))
+# print("block @ e: {}".format(agent_smith.get_block_type(e)))
+# agent_smith.add_block(start)
