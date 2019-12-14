@@ -1,6 +1,8 @@
 from coordinate import Coordinate
+
 from mcpi.minecraft import Minecraft
 import time
+import math
 
 
 class BlockAgent:
@@ -16,7 +18,9 @@ class BlockAgent:
         self.mc = mc
 
     def render_agent(self):
-        """renders agent at it's specified location"""
+        """
+        renders agent at it's specified location
+        """
         self.add_block(self.position)
 
     def print_direction(self):
@@ -26,7 +30,9 @@ class BlockAgent:
         print(self.direction)
 
     def get_pos(self):
-        """returns a coordinate object of agent's position"""
+        """
+        returns a coordinate object of agent's position
+        """
         return self.position
 
     def update_pos(self, coordinate):
@@ -45,7 +51,11 @@ class BlockAgent:
         """
         wrapper takes a coordinate and clears that place
         """
-        self.mc.setBlock(coordinate.get_x(), coordinate.get_y(), coordinate.get_z(), 1)
+        bt = self.get_block_type(coordinate)
+        if bt == 0:
+            self.mc.setBlock(coordinate.get_x(), coordinate.get_y(), coordinate.get_z(), 1)
+        else:
+            print("error setting block where type {} exists".format(bt))
 
     def move_agent(self, coordinate):
         """
@@ -74,7 +84,8 @@ class BlockAgent:
             return Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
         if self.direction == 'w':
             return Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
-
+        return None
+    
     def move_forward(self):
         """
         moves the block agent forward by one space according to its
@@ -141,29 +152,85 @@ def dfs(agent, goal):
         print("agent arrived at {}".format(vertex))
         if agent.get_pos() == goal:  # check for goal state
             print("GOAL REACHED")
+            agent.remove_block(vertex)
             return True
         if vertex not in visited:  # if we have not visted this node yet
             visited.add(vertex)  # add this node to visited set
             neighbors = agent.expand()
             print("neighbors: {}".format(neighbors))
             stack.extend(neighbors - visited)  # add unvisited nodes stack
-        time.sleep(1)
+        time.sleep(.2)
 
 
 def bfs(agent, goal):
     """
     breadth-first traversal
     """
+    visited, q = set(), [agent.get_pos()]
+    while q:
+        vertex = q.pop(0)
+        agent.move_agent(vertex)
+        print("agent arrived at {}".format(vertex))
+        if agent.get_pos() == goal:  # check for goal state
+            print("GOAL REACHED")
+            agent.remove_block(vertex)
+            return True
+        if vertex not in visited:  # if we have not visted this node yet
+            visited.add(vertex)  # add this node to visited set
+            neighbors = agent.expand()
+            print("neighbors: {}".format(neighbors))
+            q.extend(neighbors - visited)  # add unvisited nodes stack
+        time.sleep(.2)
 
-
-def a_star(agent, goal):
+def a_star(agent, start, goal):
     """
     a-star algorithm for finding shortest path
     """
-    start_point = Coordinate(12, 9, 56)  # starting point of our maze
-    end_point = Coordinate(7, 9, 43)
-
-
+    def a_star_heuristic(current, start, goal):
+        """calculates the distance (hypotenuse) between two 2D points"""
+        if current == None or start == None or goal == None:
+            return 0
+        return \
+            math.hypot(start.get_x() - current.get_x(), start.get_y() - current.get_y()) + \
+            math.hypot(goal.get_x() - current.get_x(), goal.get_y() - current.get_y())
+    
+    def reconstruct_path(came_from, current):
+        """reconstructs the path found by a_star"""
+        path = []
+        path.append(current)
+        while current in came_from:
+            current = came_from[current]
+            path.insert(0, current)
+        return path
+        
+    # init some guys
+    frontier = set()
+    frontier.add(start)
+    came_from = {}
+    g_scores = {}
+    g_scores[start.__repr__()] = 0
+    f_scores = {}
+    f_scores[start.__repr__()] = 0
+    current = None
+    print(len(frontier))
+    while frontier:
+        for node in frontier:  # get the node with the lowest f score
+            current = node if len(frontier) == 1 or a_star_heuristic(node, start, goal) < a_star_heuristic(current, start, goal) else node
+        agent.move_agent(current)  # position agent
+        if current == goal:
+            return reconstruct_path()
+        frontier.remove(current)
+        for neighbor in agent.expand():
+            temp_g = 1 + g_scores[current.__repr__()]  # 1 is a stand-in due to equal weights to neighbors
+            if temp_g < g_scores[neighbor.__repr__()]:
+                came_from[neighbor.__repr__()] = current
+                g_score[neighbor.__repr__()] = temp_g
+                f_scores[neighbor.__repr__()] = g_scores[neighbor.__repr__()] + 1
+                if neighbor not in frontier:
+                    frontier.add(neighbor)
+    print("Could not find shortest path!")
+    return False  # failed to find shortest path
+        
 def hillclimb(agent):
     """
     a literal hill-climbing algorithm for our agent
@@ -195,12 +262,13 @@ def run_dfs():
     agent_smith.render_agent()
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
     dfs(agent_smith, goal)
+    return True
 
 
 def run_bfs():
     # BFS
     start = Coordinate(-13, 9, 56)  # starting point of our maze
-    goal = Coordinate(7, 9, 43)  # Goal point of our maze
+    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
     start_block = agent_smith.get_block_type(start)
@@ -210,9 +278,25 @@ def run_bfs():
     agent_smith.render_agent()
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
     bfs(agent_smith, goal)
-
+    return True
+    
+def run_a_star():
+    start = Coordinate(-13, 9, 56)  # starting point of our maze
+    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
+    mc = Minecraft.create()
+    agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
+    start_block = agent_smith.get_block_type(start)
+    if start_block != 0:
+        print("start point occupied by a block ID:{}".format(start_block))
+        return False
+    agent_smith.render_agent()
+    print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
+    a_star(agent_smith, start, goal)
+    
+    
 # setup driver for this class test
-run_dfs()
+#run_dfs()
+run_a_star()
 #start = Coordinate(-13, 9, 56)
 #n = Coordinate(-11, 9, 56)
 #s = Coordinate(-13, 9, 56)
