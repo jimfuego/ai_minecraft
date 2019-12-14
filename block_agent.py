@@ -116,17 +116,17 @@ class BlockAgent:
         """
         n = Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() - 1)
         s = Coordinate(self.position.get_x(), self.position.get_y(), self.position.get_z() + 1)
-        e = Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
-        w = Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
-        empty_neighbors = []
+        w = Coordinate(self.position.get_x() - 1, self.position.get_y(), self.position.get_z())
+        e = Coordinate(self.position.get_x() + 1, self.position.get_y(), self.position.get_z())
+        empty_neighbors = set()
         if self.get_block_type(n) == 0:
-            empty_neighbors.append(n)
+            empty_neighbors.add(n)
         if self.get_block_type(s) == 0:
-            empty_neighbors.append(s)
+            empty_neighbors.add(s)
         if self.get_block_type(e) == 0:
-            empty_neighbors.append(e)
+            empty_neighbors.add(e)
         if self.get_block_type(w) == 0:
-            empty_neighbors.append(w)
+            empty_neighbors.add(w)
         return empty_neighbors
 
 
@@ -144,7 +144,10 @@ def dfs(agent, goal):
             return True
         if vertex not in visited:  # if we have not visted this node yet
             visited.add(vertex)  # add this node to visited set
-            stack.extend(agent.expand() - visited)  # add unvisited nodes stack
+            neighbors = agent.expand()
+            print("neighbors: {}".format(neighbors))
+            stack.extend(neighbors - visited)  # add unvisited nodes stack
+        time.sleep(1)
 
 
 def bfs(agent, goal):
@@ -181,10 +184,14 @@ def reactive_agent():
 
 def run_dfs():
     # DFS
-    start = Coordinate(12, 9, 56)  # starting point of our maze
-    goal = Coordinate(7, 9, 43)  # Goal point of our maze
+    start = Coordinate(-13, 9, 56)  # starting point of our maze
+    goal = Coordinate(-8, 9, 43)  # Goal point of our maze
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
+    start_block = agent_smith.get_block_type(start)
+    if start_block != 0:
+        print("start point occupied by a block ID:{}".format(start_block))
+        return False
     agent_smith.render_agent()
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
     dfs(agent_smith, goal)
@@ -192,13 +199,30 @@ def run_dfs():
 
 def run_bfs():
     # BFS
-    start = Coordinate(12, 9, 56)  # starting point of our maze
+    start = Coordinate(-13, 9, 56)  # starting point of our maze
     goal = Coordinate(7, 9, 43)  # Goal point of our maze
     mc = Minecraft.create()
     agent_smith = BlockAgent(start, 'n', mc)  # instantiate agent
+    start_block = agent_smith.get_block_type(start)
+    if start_block != 0:
+        print("start point occupied by a block ID:{}".format(start_block))
+        return False
     agent_smith.render_agent()
     print("agent start pos DFS:\ne/w: {}\nn/s: {}\nalt: {}".format(start.get_x(), start.get_z(), start.get_y()))
-
+    bfs(agent_smith, goal)
 
 # setup driver for this class test
 run_dfs()
+#start = Coordinate(-13, 9, 56)
+#n = Coordinate(-11, 9, 56)
+#s = Coordinate(-13, 9, 56)
+#w = Coordinate(-12, 9, 55)
+#e = Coordinate(-12, 9, 57)
+#mc = Minecraft.create()
+#agent_smith = BlockAgent(start, 'n', mc)
+#print("block @ start: {}".format(agent_smith.get_block_type(start)))
+#print("block @ n: {}".format(agent_smith.get_block_type(n)))
+#print("block @ s: {}".format(agent_smith.get_block_type(s)))
+#print("block @ w: {}".format(agent_smith.get_block_type(w)))
+#print("block @ e: {}".format(agent_smith.get_block_type(e)))
+#agent_smith.add_block(start)
