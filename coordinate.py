@@ -5,7 +5,7 @@ class Coordinate:
         self.z = z
 
     def __repr__(self):
-        return "{} {} {}".format(self.get_x(), self.get_y(), self.get_z())
+        return "{}{}{}".format(self.get_x(), self.get_y(), self.get_z())
 
     def __eq__(self, other):
         if isinstance(other, Coordinate):
@@ -43,5 +43,6 @@ class Coordinate:
 coset = set()
 coset.add(Coordinate(10, 5, 5))
 print(len(coset))
-coset.add(Coordinate(10, 5, 6))
+coset.add(Coordinate(10, 5, 5))
 print(len(coset))
+print(Coordinate(10, 5, 5) == Coordinate(10, 5, 6))
