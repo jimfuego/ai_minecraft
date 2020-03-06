@@ -1,3 +1,4 @@
+# this code is unfinished. feel free to submit a pull request :)
 from mcpi.minecraft import Minecraft
 import time
         
